@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { auth, handleUserProfile } from './firebase/utils';
 
+// hoc
+import WithAuth from './hoc/withAuth';
 // layouts
 import MainLayout from './layouts/MainLayout';
 import HomepageLayout from './layouts/HomepageLayout';
@@ -11,6 +13,7 @@ import Homepage from './pages/Homepage';
 import Registration from './pages/Registration';
 import Login from './pages/Login';
 import Recovery from './pages/Recovery';
+import Dashboard from './pages/Dashboard';
 
 import './default.scss';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -18,33 +21,23 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { connect } from 'react-redux';
 import setCurrentUser from './store/User/user.actions';
 
-const initialState = {
-	open: false,
-};
+const App = (props) => {
+	const [open, setOpen] = useState(false);
+	const { currentUser, setCurrentUser } = props;
 
-class App extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			...initialState,
-		};
-	}
-	handleClose = (event, reason) => {
+	const handleClose = (event, reason) => {
 		if (reason === 'clickaway') {
 			return;
 		}
 
-		this.setState({ open: false });
+		setOpen(false);
 	};
 
-	handleSnackbar = () => {
-		this.setState({ open: true });
+	const handleSnackbar = () => {
+		setOpen(true);
 	};
 
-	authListener = null;
-
-	componentDidMount() {
-		const { setCurrentUser } = this.props;
+	useEffect(() => {
 		/*
 		working
 		so after the component is mounted then we will setup a listener and which will be listening for 
@@ -61,7 +54,7 @@ class App extends Component {
 		login route rest only the layout wrapping.
 		
 		*/
-		this.authListener = auth.onAuthStateChanged(async (userAuth) => {
+		const authListener = auth.onAuthStateChanged(async (userAuth) => {
 			console.log(userAuth);
 
 			if (userAuth) {
@@ -78,77 +71,85 @@ class App extends Component {
 
 			setCurrentUser(userAuth);
 		});
-	}
+		return () => {
+			authListener();
+		};
+	}, []);
 
-	componentWillUnmount() {
-		this.authListener();
-	}
-
-	render() {
-		const { open } = this.state;
-		const { currentUser } = this.props;
-
-		return (
-			<>
-				<div className="App">
-					<Switch>
-						<Route
-							exact
-							path="/"
-							render={() => (
-								<HomepageLayout>
-									<Homepage />
-								</HomepageLayout>
-							)}
-						/>
-						<Route
-							path="/registration"
-							render={() =>
-								currentUser ? (
-									<Redirect to="/" />
-								) : (
-									<MainLayout>
-										<Registration />
-									</MainLayout>
-								)
-							}
-						/>
-						<Route
-							path="/login"
-							render={() =>
-								currentUser ? (
-									<Redirect to="/" />
-								) : (
-									<MainLayout>
-										<Login />
-									</MainLayout>
-								)
-							}
-						/>
-						<Route
-							path="/recovery"
-							render={() => (
+	return (
+		<>
+			<div className="App">
+				<Switch>
+					<Route
+						exact
+						path="/"
+						render={() => (
+							<HomepageLayout>
+								<Homepage />
+							</HomepageLayout>
+						)}
+					/>
+					<Route
+						path="/registration"
+						render={() =>
+							currentUser ? (
+								<Redirect to="/" />
+							) : (
 								<MainLayout>
-									<Recovery handleSnackbar={this.handleSnackbar} />
+									<Registration />
 								</MainLayout>
-							)}
-						/>
-					</Switch>
-				</div>
-				<Snackbar
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'left',
-					}}
-					open={open}
-					autoHideDuration={6000}
-					onClose={this.handleClose}
-					message="Reset Link sent to Email"
-				/>
-			</>
-		);
-	}
-}
+							)
+						}
+					/>
+					<Route
+						path="/login"
+						render={() =>
+							currentUser ? (
+								<Redirect to="/" />
+							) : (
+								<MainLayout>
+									<Login />
+								</MainLayout>
+							)
+						}
+					/>
+					<Route
+						path="/recovery"
+						render={() => (
+							<MainLayout>
+								<Recovery handleSnackbar={handleSnackbar} />
+							</MainLayout>
+						)}
+					/>
+					{/* Here we are wrapping the dashboard component around the withAuth 
+					
+					so that dashboard component is rendered only when user is login
+					 */}
+					<Route
+						path="/dashboard"
+						render={() => (
+							<WithAuth>
+								<MainLayout>
+									<Dashboard />
+								</MainLayout>
+							</WithAuth>
+						)}
+					/>
+				</Switch>
+			</div>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'left',
+				}}
+				open={open}
+				autoHideDuration={6000}
+				onClose={handleClose}
+				message="Reset Link sent to Email"
+			/>
+		</>
+	);
+};
 
 //so what does this mapStateToProps do is it connects redux store to the props of the component
 
