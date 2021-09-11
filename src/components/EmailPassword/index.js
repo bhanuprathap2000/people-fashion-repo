@@ -45,6 +45,7 @@ class EmailPassword extends Component {
 		try {
 			const { email } = this.state;
 
+			//redirect uri after password reset
 			const config = {
 				url: 'http://localhost:3000/login',
 			};
