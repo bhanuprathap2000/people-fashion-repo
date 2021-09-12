@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { checkUserSession } from './store/User/user.actions';
 
+//components
+import AdminToolbar from './components/AdminToolbar';
+
 // hoc
 import WithAuth from './hoc/withAuth';
+import WithAdminAuth from './hoc/withAdminAuth';
+
 // layouts
 import MainLayout from './layouts/MainLayout';
 import HomepageLayout from './layouts/HomepageLayout';
@@ -14,6 +19,8 @@ import Registration from './pages/Registration';
 import Login from './pages/Login';
 import Recovery from './pages/Recovery';
 import Dashboard from './pages/Dashboard';
+import Admin from './pages/Admin';
+
 
 import './default.scss';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -60,6 +67,8 @@ const App = (props) => {
 	return (
 		<>
 			<div className="App">
+			<AdminToolbar />
+
 				<Switch>
 					<Route
 						exact
@@ -116,6 +125,13 @@ const App = (props) => {
 							</WithAuth>
 						)}
 					/>
+					<Route path="/admin" render={() => (
+          <WithAdminAuth>
+            <MainLayout>
+              <Admin />
+            </MainLayout>
+          </WithAdminAuth>
+        )} />
 				</Switch>
 			</div>
 			<Snackbar

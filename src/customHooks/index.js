@@ -1,5 +1,4 @@
 import useAuth from './useAuth';
+import useAdminAuth from './useAdminAuth';
 
-export { useAuth };
-
-// export all the custom hooks
+export { useAuth, useAdminAuth };
