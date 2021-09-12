@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
 import './styles.scss';
-import { auth, handleUserProfile } from './../../firebase/utils';
 import FormInput from './../forms/FormInput';
 import Button from './../forms/Buttons';
 import AuthWrapper from '../AuthWrapper';
+import { signUpUser } from '../../store/User/user.actions';
 
 const Signup = (props) => {
 	const [displayName, setDisplayName] = useState('');
@@ -13,6 +14,8 @@ const Signup = (props) => {
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [errors, setErrors] = useState([]);
 	const history = useHistory();
+	const dispatch = useDispatch();
+	const { signUpSuccess, signUpError } = useSelector((state) => state.user);
 
 	const resetForm = () => {
 		setDisplayName('');
@@ -21,7 +24,20 @@ const Signup = (props) => {
 		setConfirmPassword('');
 	};
 
-	const handleFormSubmit = async (event) => {
+	useEffect(() => {
+		if (signUpSuccess) {
+			resetForm();
+			history.push('/login');
+		}
+	}, [signUpSuccess]);
+
+	useEffect(() => {
+		if (Array.isArray(signUpError) && signUpError.length > 0) {
+			setErrors(signUpError);
+		}
+	}, [signUpError]);
+
+	const handleFormSubmit = (e) => {
 		/*
       this function will run when we try to register 
       get the details from the form and check whether the password and confirm password are the same
@@ -36,28 +52,8 @@ const Signup = (props) => {
       then firebase maynot allow that's to catch the error using the try catch
       
       */
-		event.preventDefault();
-
-		if (password !== confirmPassword) {
-			const err = ["Password Don't match"];
-			setErrors(err);
-			return;
-		}
-
-		try {
-			const { user } = await auth.createUserWithEmailAndPassword(
-				email,
-				password
-			);
-
-			await handleUserProfile(user, { displayName });
-
-			resetForm();
-			history.push('/login');
-		} catch (err) {
-			console.table(err);
-			setErrors([err.message]);
-		}
+		e.preventDefault();
+		dispatch(signUpUser({ displayName, email, password, confirmPassword }));
 	};
 
 	const configAuthWrapper = {

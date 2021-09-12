@@ -1,12 +1,13 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import './styles.scss';
 import { Link } from 'react-router-dom';
-import { auth } from './../../firebase/utils';
 import Logo from '../../assests/logo.png';
-import { connect } from 'react-redux';
+import { signOutUser } from '../../store/User/user.actions';
 
 const Header = (props) => {
-	const { currentUser } = props;
+	const { currentUser } = useSelector((state) => state.user);
+	const dispatch = useDispatch();
 
 	return (
 		<header className="header">
@@ -24,7 +25,7 @@ const Header = (props) => {
 								<Link to="/dashboard">My Account</Link>
 							</li>
 							<li>
-								<span onClick={() => auth.signOut()}>LogOut</span>
+								<span onClick={() => dispatch(signOutUser())}>LogOut</span>
 							</li>
 						</ul>
 					)}
@@ -52,11 +53,11 @@ Header.defaultProps = {
 //Here we are connecting the redux store to the component props
 //we are destructuring the required fronm the redux store(user) and return them  and they will be avialable as
 //component props
-const matchStateToProps = ({ user }) => {
-	return {
-		currentUser: user.currentUser,
-	};
-};
+// const matchStateToProps = ({ user }) => {
+// 	return {
+// 		currentUser: user.currentUser,
+// 	};
+// };
 
 //this is a higher order component concept
-export default connect(matchStateToProps, null)(Header);
+export default Header;

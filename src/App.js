@@ -18,12 +18,13 @@ import Dashboard from './pages/Dashboard';
 import './default.scss';
 import Snackbar from '@material-ui/core/Snackbar';
 
-import { connect } from 'react-redux';
-import setCurrentUser from './store/User/user.actions';
+import { useDispatch,useSelector } from 'react-redux';
+import { setCurrentUser } from './store/User/user.actions';
 
 const App = (props) => {
 	const [open, setOpen] = useState(false);
-	const { currentUser, setCurrentUser } = props;
+	const { currentUser } = useSelector(state=>state.user);
+	const dispatch = useDispatch() 
 
 	const handleClose = (event, reason) => {
 		if (reason === 'clickaway') {
@@ -54,26 +55,23 @@ const App = (props) => {
 		login route rest only the layout wrapping.
 		
 		*/
-		const authListener = auth.onAuthStateChanged(async (userAuth) => {
-			console.log(userAuth);
-
+		const authListener = auth.onAuthStateChanged(async userAuth => {
 			if (userAuth) {
-				const userRef = await handleUserProfile(userAuth);
-				userRef.onSnapshot((snapshot) => {
-					setCurrentUser({
-						currentUser: {
-							id: snapshot.id,
-							...snapshot.data(),
-						},
-					});
-				});
+			  const userRef = await handleUserProfile(userAuth);
+			  userRef.onSnapshot(snapshot => {
+				dispatch(setCurrentUser({
+				  id: snapshot.id,
+				  ...snapshot.data()
+				}));
+			  })
 			}
-
-			setCurrentUser(userAuth);
-		});
-		return () => {
+	  
+			dispatch(setCurrentUser(userAuth));
+		  });
+	  
+		  return () => {
 			authListener();
-		};
+		  };
 	}, []);
 
 	return (
@@ -153,19 +151,19 @@ const App = (props) => {
 
 //so what does this mapStateToProps do is it connects redux store to the props of the component
 
-const mapStateToProps = ({ user }) => {
-	return {
-		currentUser: user.currentUser,
-	};
-};
+// const mapStateToProps = ({ user }) => {
+// 	return {
+// 		currentUser: user.currentUser,
+// 	};
+// };
 
-//what does the mapDispatchToProps do is that we can create functions which when called will dispatch the actions and make available these functions to
-//component to call them as props.
-//  i prefer return {}-.explict return  thyan this ({})->implict return
-const mapDispatchToProps = (dispatch) => {
-	return {
-		setCurrentUser: (user) => dispatch(setCurrentUser(user)),
-	};
-};
+// //what does the mapDispatchToProps do is that we can create functions which when called will dispatch the actions and make available these functions to
+// //component to call them as props.
+// //  i prefer return {}-.explict return  thyan this ({})->implict return
+// const mapDispatchToProps = (dispatch) => {
+// 	return {
+// 		setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+// 	};
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

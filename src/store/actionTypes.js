@@ -1,2 +1,10 @@
 //user action types
-export const SET_CURRENT_USER='SET_CURRENT_USER'
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS';
+export const SIGN_IN_ERROR = 'SIGN_IN_ERROR';
+export const SIGN_OUT = 'SIGN_OUT';
+export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
+export const SIGN_UP_ERROR = 'SIGN_UP_ERROR';
+export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
+export const RESET_PASSWORD_ERROR = 'RESET_PASSWORD_ERROR';
+export const RESET_AUTH_FORMS = 'RESET_AUTH_FORMS';

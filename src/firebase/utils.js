@@ -8,10 +8,10 @@ firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 //we can have multiple provider here we are using the google provider
-const GoogleProvider = new firebase.auth.GoogleAuthProvider();
+export const GoogleProvider = new firebase.auth.GoogleAuthProvider();
 GoogleProvider.setCustomParameters({ prompt: 'select_account' });
 //this function will be called when we click on the button signin with google
-export const signInWithGoogle = () => auth.signInWithPopup(GoogleProvider);
+// export const signInWithGoogle = () => auth.signInWithPopup(GoogleProvider);
 //this function is responsible for creating the new users in the users collection
 //because the users will be in different table in the auth section so we can create a
 //seperate section for users
