@@ -8,15 +8,10 @@ import AuthWrapper from './../AuthWrapper';
 import FormInput from './../forms/FormInput';
 import Button from './../forms/Buttons';
 
-const mapState = ({ user }) => ({
-	currentUser: user.currentUser,
-	userErr: user.userErr,
-});
-
 const Signup = (props) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const { currentUser, userErr } = useSelector(mapState);
+	const { currentUser, userErr } = useSelector((state) => state.user);
 	const [displayName, setDisplayName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');

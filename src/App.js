@@ -33,7 +33,7 @@ const App = (props) => {
 		setOpen(false);
 	};
 
-	const handleSnackbar = () => {
+	 const handleSnackbar = () => {
 		setOpen(true);
 	};
 
@@ -148,5 +148,4 @@ const App = (props) => {
 // 		setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 // 	};
 // };
-
 export default App;

@@ -29,7 +29,7 @@ export const signUpUserStart = (userCredentials) => ({
 
 export const userError = (err) => ({
 	type: actionTypes.USER_ERROR,
-	payload: err,
+	payload: [err],
 });
 
 export const resetPasswordStart = (userCredentials) => ({

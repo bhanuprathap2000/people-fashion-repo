@@ -48,6 +48,8 @@ export const handleUserProfile = async ({ userAuth, additionalData }) => {
 	}
 	return userRef;
 };
+
+//utility function for knowing whether a user is login or not
 export const getCurrentUser = () => {
 	return new Promise((resolve, reject) => {
 		const unsubscribe = auth.onAuthStateChanged((userAuth) => {

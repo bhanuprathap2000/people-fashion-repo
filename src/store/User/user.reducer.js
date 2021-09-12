@@ -4,6 +4,7 @@ const INITIAL_STATE = {
 	currentUser: null,
 	resetPasswordSuccess: false,
 	userErr: [],
+	snackBarText: '',
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -18,6 +19,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				resetPasswordSuccess: action.payload,
+				snackBarText: 'Reset Link Sent To mail.',
 			};
 		case actionTypes.USER_ERROR:
 			return {

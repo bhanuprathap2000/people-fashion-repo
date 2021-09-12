@@ -16,7 +16,7 @@ const mapState = ({ user }) => ({
 	userErr: user.userErr,
 });
 
-const EmailPassword = (props) => {
+const EmailPassword = ({ handleSnackbar}) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const { resetPasswordSuccess, userErr } = useSelector(mapState);
@@ -38,7 +38,7 @@ const EmailPassword = (props) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		dispatch(resetPasswordStart({ email }));
+		dispatch(resetPasswordStart({ email,handleSnackbar }));
 	};
 
 	const configAuthWrapper = {
