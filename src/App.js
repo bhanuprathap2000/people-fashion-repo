@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { auth, handleUserProfile } from './firebase/utils';
+import { checkUserSession } from './store/User/user.actions';
 
 // hoc
 import WithAuth from './hoc/withAuth';
@@ -18,13 +18,12 @@ import Dashboard from './pages/Dashboard';
 import './default.scss';
 import Snackbar from '@material-ui/core/Snackbar';
 
-import { useDispatch,useSelector } from 'react-redux';
-import { setCurrentUser } from './store/User/user.actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 const App = (props) => {
 	const [open, setOpen] = useState(false);
-	const { currentUser } = useSelector(state=>state.user);
-	const dispatch = useDispatch() 
+	const { currentUser } = useSelector((state) => state.user);
+	const dispatch = useDispatch();
 
 	const handleClose = (event, reason) => {
 		if (reason === 'clickaway') {
@@ -55,23 +54,7 @@ const App = (props) => {
 		login route rest only the layout wrapping.
 		
 		*/
-		const authListener = auth.onAuthStateChanged(async userAuth => {
-			if (userAuth) {
-			  const userRef = await handleUserProfile(userAuth);
-			  userRef.onSnapshot(snapshot => {
-				dispatch(setCurrentUser({
-				  id: snapshot.id,
-				  ...snapshot.data()
-				}));
-			  })
-			}
-	  
-			dispatch(setCurrentUser(userAuth));
-		  });
-	  
-		  return () => {
-			authListener();
-		  };
+		dispatch(checkUserSession());
 	}, []);
 
 	return (

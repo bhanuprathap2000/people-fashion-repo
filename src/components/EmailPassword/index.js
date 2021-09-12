@@ -1,83 +1,74 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import {
+	resetPasswordStart,
+	resetUserState,
+} from './../../store/User/user.actions';
 import './styles.scss';
 
 import AuthWrapper from './../AuthWrapper';
 import FormInput from './../forms/FormInput';
 import Button from './../forms/Buttons';
-import {
-	resetPassword,
-	resetAllAuthForms,
-} from './../../store/User/user.actions';
 
-const EmailPassword = ({ handleSnackbar }) => {
-	const [email, setEmail] = useState();
-	const [errors, setErrors] = useState([]);
-	const history = useHistory();
+const mapState = ({ user }) => ({
+	resetPasswordSuccess: user.resetPasswordSuccess,
+	userErr: user.userErr,
+});
+
+const EmailPassword = (props) => {
 	const dispatch = useDispatch();
-	const { resetPasswordSuccess, resetPasswordError } = useSelector(
-		(state) => state.user
-	);
+	const history = useHistory();
+	const { resetPasswordSuccess, userErr } = useSelector(mapState);
+	const [email, setEmail] = useState('');
+	const [errors, setErrors] = useState([]);
 
 	useEffect(() => {
 		if (resetPasswordSuccess) {
-			dispatch(resetAllAuthForms());
+			dispatch(resetUserState());
 			history.push('/login');
 		}
 	}, [resetPasswordSuccess]);
 
 	useEffect(() => {
-		if (Array.isArray(resetPasswordError) && resetPasswordError.length > 0) {
-			setErrors(resetPasswordError);
+		if (Array.isArray(userErr) && userErr.length > 0) {
+			setErrors(userErr);
 		}
-	}, [resetPasswordError]);
+	}, [userErr]);
 
-	const handleSubmit = async (e) => {
-		/*
-        on click of the button collect the email from user 
-        and we need to create a config object which contains the url to be redirected when the password reset 
-        is done sucessfully
-        using the auth instance call the sendPasswordResetEmail and pass the email and config
-        when sucessfully reset call push to login route 
-        if not update the error state so that user can see the error
-        
-        */
+	const handleSubmit = (e) => {
 		e.preventDefault();
-
-		dispatch(resetPassword({ email, handleSnackbar }));
+		dispatch(resetPasswordStart({ email }));
 	};
 
 	const configAuthWrapper = {
-		headline: 'Email Password Reset',
+		headline: 'Email Password',
 	};
 
 	return (
-		<>
-			<AuthWrapper {...configAuthWrapper}>
-				<div className="formWrap">
-					{errors.length > 0 && (
-						<ul>
-							{errors.map((e, index) => {
-								return <li key={index}>{e}</li>;
-							})}
-						</ul>
-					)}
+		<AuthWrapper {...configAuthWrapper}>
+			<div className="formWrap">
+				{errors.length > 0 && (
+					<ul>
+						{errors.map((e, index) => {
+							return <li key={index}>{e}</li>;
+						})}
+					</ul>
+				)}
 
-					<form onSubmit={handleSubmit}>
-						<FormInput
-							type="email"
-							name="email"
-							value={email}
-							placeholder="Email"
-							handleChange={(e) => setEmail(e.target.value)}
-						/>
+				<form onSubmit={handleSubmit}>
+					<FormInput
+						type="email"
+						name="email"
+						value={email}
+						placeholder="Email"
+						handleChange={(e) => setEmail(e.target.value)}
+					/>
 
-						<Button type="submit">Email Password Reset</Button>
-					</form>
-				</div>
-			</AuthWrapper>
-		</>
+					<Button type="submit">Email Password</Button>
+				</form>
+			</div>
+		</AuthWrapper>
 	);
 };
 
