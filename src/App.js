@@ -12,6 +12,8 @@ import WithAdminAuth from './hoc/withAdminAuth';
 // layouts
 import MainLayout from './layouts/MainLayout';
 import HomepageLayout from './layouts/HomepageLayout';
+import AdminLayout from './layouts/AdminLayout';
+import DashboardLayout from './layouts/DashboardLayout';
 
 // pages
 import Homepage from './pages/Homepage';
@@ -20,7 +22,6 @@ import Login from './pages/Login';
 import Recovery from './pages/Recovery';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
-
 
 import './default.scss';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -40,7 +41,7 @@ const App = (props) => {
 		setOpen(false);
 	};
 
-	 const handleSnackbar = () => {
+	const handleSnackbar = () => {
 		setOpen(true);
 	};
 
@@ -67,7 +68,7 @@ const App = (props) => {
 	return (
 		<>
 			<div className="App">
-			<AdminToolbar />
+				<AdminToolbar />
 
 				<Switch>
 					<Route
@@ -119,19 +120,22 @@ const App = (props) => {
 						path="/dashboard"
 						render={() => (
 							<WithAuth>
-								<MainLayout>
+								<DashboardLayout>
 									<Dashboard />
-								</MainLayout>
+								</DashboardLayout>
 							</WithAuth>
 						)}
 					/>
-					<Route path="/admin" render={() => (
-          <WithAdminAuth>
-            <MainLayout>
-              <Admin />
-            </MainLayout>
-          </WithAdminAuth>
-        )} />
+					<Route
+						path="/admin"
+						render={() => (
+							<WithAdminAuth>
+								<AdminLayout>
+									<Admin />
+								</AdminLayout>
+							</WithAdminAuth>
+						)}
+					/>
 				</Switch>
 			</div>
 			<Snackbar
