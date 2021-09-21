@@ -4,7 +4,7 @@ import './styles.scss';
 const Footer = (props) => {
 	return (
 		<footer className="footer">
-			<div className="wrap">© SimpleTut 2020</div>
+			<div className="wrap">© People Fashion 2020</div>
 		</footer>
 	);
 };

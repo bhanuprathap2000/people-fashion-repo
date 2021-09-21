@@ -21,7 +21,7 @@ const Product = ({ productThumbnail, productName, productPrice }) => {
 						<span className="name">{productName}</span>
 					</li>
 					<li>
-						<span className="price">£{productPrice}</span>
+						<span className="price">₹{productPrice}</span>
 					</li>
 					<li>
 						<div className="addToCart">
