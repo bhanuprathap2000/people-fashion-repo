@@ -6,6 +6,8 @@ import {
 	setProduct,
 } from './../../store/Products/products.actions';
 import Button from './../forms/Buttons';
+import { addProduct } from './../../store/Cart/cart.actions';
+
 import './styles.scss';
 
 const mapState = (state) => ({
@@ -27,6 +29,13 @@ const ProductCard = ({}) => {
 		};
 	}, []);
 
+	const handleAddToCart = (product) => {
+		if (!product) return;
+		dispatch(
+		  addProduct(product)
+		)
+	  }
+
 	const configAddToCartBtn = {
 		type: 'button',
 	};
@@ -46,7 +55,8 @@ const ProductCard = ({}) => {
 					</li>
 					<li>
 						<div className="addToCart">
-							<Button {...configAddToCartBtn}>Add to cart</Button>
+						<Button {...configAddToCartBtn} onClick={() => handleAddToCart(product)}>Add To Cart</Button>
+
 						</div>
 					</li>
 					<li>
