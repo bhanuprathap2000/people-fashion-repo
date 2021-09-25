@@ -24,7 +24,7 @@ import Recovery from './pages/Recovery';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
 import ProductDetails from './pages/ProductDetails';
-
+import Cart from './pages/Cart';
 
 import './default.scss';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -83,21 +83,39 @@ const App = (props) => {
 							</HomepageLayout>
 						)}
 					/>
-					 <Route exact path="/search" render={() => (
-          <MainLayout>
-            <Search />
-          </MainLayout>
-        )} />
-        <Route path="/search/:filterType" render={() => (
-          <MainLayout>
-            <Search />
-          </MainLayout>
-					)} />
-					   <Route path="/product/:productID" render={() => (
-          <MainLayout>
-            <ProductDetails />
-          </MainLayout>
-        )} />
+					<Route
+						exact
+						path="/search"
+						render={() => (
+							<MainLayout>
+								<Search />
+							</MainLayout>
+						)}
+					/>
+					<Route
+						path="/search/:filterType"
+						render={() => (
+							<MainLayout>
+								<Search />
+							</MainLayout>
+						)}
+					/>
+					<Route
+						path="/product/:productID"
+						render={() => (
+							<MainLayout>
+								<ProductDetails />
+							</MainLayout>
+						)}
+					/>
+					<Route
+						path="/cart"
+						render={() => (
+							<MainLayout>
+								<Cart />
+							</MainLayout>
+						)}
+					/>
 					<Route
 						path="/registration"
 						render={() =>
