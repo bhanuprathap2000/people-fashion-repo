@@ -21,7 +21,7 @@ export function* addProduct({ payload }) {
 		yield handleAddProduct({
 			...payload,
 			productAdminUserUID: auth.currentUser.uid,
-			createdDate: new Date(),
+			createdDate: firebase.firestore.FieldValue.serverTimestamp(),
 		});
 		yield put(fetchProductsStart());
 	} catch (err) {

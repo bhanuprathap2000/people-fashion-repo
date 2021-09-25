@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import FormInput from './../forms/FormInput';
 import Button from './../forms/Buttons';
-import {
-	selectCartTotal,
-	selectCartItemsCount,
-} from './../../store/Cart/cart.selectors';
+import { selectCartTotal, selectCartItemsCount, selectCartItems } from './../../store/Cart/cart.selectors';
+import { saveOrderHistory } from './../../store/Orders/orders.actions';
 import { clearCart } from './../../store/Cart/cart.actions';
 import { createStructuredSelector } from 'reselect';
 import { useSelector, useDispatch } from 'react-redux';
@@ -23,11 +21,12 @@ const initialAddressState = {
 const mapState = createStructuredSelector({
 	total: selectCartTotal,
 	itemCount: selectCartItemsCount,
+	cartItems: selectCartItems,
 });
 
 const PaymentDetails = () => {
 	const history = useHistory();
-	const { total, itemCount } = useSelector(mapState);
+	const { total, itemCount, cartItems } = useSelector(mapState);
 	const dispatch = useDispatch();
 	const [billingAddress, setBillingAddress] = useState({
 		...initialAddressState,
@@ -41,7 +40,8 @@ const PaymentDetails = () => {
 
 	useEffect(() => {
 		if (itemCount < 1) {
-			history.push('/');
+			history.push('/dashboard');
+
 		}
 	}, [itemCount]);
 
@@ -73,7 +73,22 @@ const PaymentDetails = () => {
 
 	const handlePayment = (pay, razorpayOrderId, razorpayPaymentId) => {
 		if (pay) {
-			dispatch(clearCart());
+			const configOrder = {
+				orderTotal: total,
+				orderItems: cartItems.map(item => {
+				  const { documentID, productThumbnail, productName,
+					productPrice, quantity } = item;
+	
+				  return {
+					documentID,
+					productThumbnail,
+					productName,
+					productPrice,
+					quantity
+				  };
+				})
+			  }
+			dispatch( saveOrderHistory(configOrder));
 		}
 	};
 

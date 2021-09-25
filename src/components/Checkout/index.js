@@ -88,12 +88,16 @@ const Checkout = ({}) => {
 														<tbody>
 															<tr>
 																<td>
-																	<Button onClick={() => history.goBack()}>
+																	<Button
+																		onClick={() => history.push('/search')}>
 																		Continue Shopping
 																	</Button>
 																</td>
 																<td>
-																<Button onClick={() => history.push('/payment')}>Checkout</Button>
+																	<Button
+																		onClick={() => history.push('/payment')}>
+																		Checkout
+																	</Button>
 																</td>
 															</tr>
 														</tbody>
