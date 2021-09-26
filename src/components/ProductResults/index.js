@@ -88,11 +88,12 @@ const ProductResults = () => {
           const configProduct = {
             productThumbnail,
             productName,
-            productPrice
+            productPrice,
+            ...product
           };
 
           return (
-            <Product {...configProduct} />
+            <Product key={ productThumbnail} {...configProduct} />
           );
         })}
       </div>
