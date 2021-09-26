@@ -19,11 +19,21 @@ const Header = (props) => {
 	return (
 		<header className="header">
 			<div className="wrap">
-				<div>
+				<div className="logo">
 					<Link to="/">
-						<h1>People Fashion</h1>
+						<h3>People Fashion</h3>
 					</Link>
 				</div>
+				<nav>
+					<ul>
+						<li>
+							<Link to="/">Home</Link>
+						</li>
+						<li>
+							<Link to="/search">Search</Link>
+						</li>
+					</ul>
+				</nav>
 				<div className="callToActions">
 					{currentUser && (
 						<ul>
