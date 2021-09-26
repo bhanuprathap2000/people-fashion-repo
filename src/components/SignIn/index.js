@@ -1,24 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import './styles.scss';
 import Button from './../forms/Buttons';
-import { signInWithGoogle, auth } from './../../firebase/utils';
 import FormInput from './../forms/FormInput';
 import AuthWrapper from '../AuthWrapper';
 import { Link } from 'react-router-dom';
+import { signInUser, signInWithGoogle } from '../../store/User/user.actions';
 
 const SignIn = (props) => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [errors, setErrors] = useState([]);
 	const history = useHistory();
+	const [errors, setErrors] = useState([]);
+	const { signInSuccess, signInError } = useSelector((state) => state.user);
+	const dispatch = useDispatch();
 
 	const resetForm = () => {
 		setEmail('');
 		setPassword('');
 	};
 
-	const handleSubmit = async (e) => {
+	useEffect(() => {
+		if (signInSuccess) {
+			resetForm();
+			history.push('/');
+		}
+	}, [signInSuccess]);
+
+	useEffect(() => {
+		if (Array.isArray(signInError) && signInError.length > 0) {
+			setErrors(signInError);
+		}
+	}, [signInError]);
+
+	const handleSubmit = (e) => {
 		/*
 		
 		so this function will run when we click on the submit and we prevent the default behaviour
@@ -29,14 +45,10 @@ const SignIn = (props) => {
 		*/
 		e.preventDefault();
 
-		try {
-			await auth.signInWithEmailAndPassword(email, password);
-			resetForm();
-			history.push('/');
-		} catch (err) {
-			console.table(err);
-			setErrors([err.message]);
-		}
+		dispatch(signInUser({ email, password }));
+	};
+	const handleGoogleSignIn = () => {
+		dispatch(signInWithGoogle());
 	};
 
 	const configAuthWrapper = {
@@ -75,7 +87,7 @@ const SignIn = (props) => {
 
 					<div className="socialSignin">
 						<div className="row">
-							<Button onClick={signInWithGoogle}>Sign in with Google</Button>
+							<Button onClick={handleGoogleSignIn}>Sign in with Google</Button>
 						</div>
 					</div>
 					<div className="links">
