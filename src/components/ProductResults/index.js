@@ -4,82 +4,105 @@ import { useHistory, useParams } from 'react-router-dom';
 import { fetchProductsStart } from './../../store/Products/products.actions';
 import Product from './Product';
 import FormSelect from './../forms/FormSelect';
+import LoadMore from './../LoadMore';
 import './styles.scss';
 
 const mapState = ({ productsData }) => ({
-	products: productsData.products,
+  products: productsData.products
 });
 
 const ProductResults = () => {
-	const dispatch = useDispatch();
-	const history = useHistory();
-	const { filterType } = useParams();
-	const { products } = useSelector(mapState);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { filterType } = useParams();
+  const { products } = useSelector(mapState);
 
-	useEffect(() => {
-		dispatch(fetchProductsStart({ filterType }));
-	}, [filterType]);
+  const { data, queryDoc, isLastPage } = products;
 
-	const handleFilter = (e) => {
-		const nextFilter = e.target.value;
-		history.push(`/search/${nextFilter}`);
-	};
+  useEffect(() => {
+    dispatch(
+      fetchProductsStart({ filterType })
+    )
+  }, [filterType]);
 
-	if (!Array.isArray(products)) return null;
-	if (products.length < 1) {
-		return (
-			<div className="products">
-				<p>No search results.</p>
-			</div>
-		);
-	}
+  const handleFilter = (e) => {
+    const nextFilter = e.target.value;
+    history.push(`/search/${nextFilter}`);
+  };
 
-	const configFilters = {
-		defaultValue: filterType,
-		options: [
-			{
-				name: 'Show all',
-				value: '',
-			},
-			{
-				name: 'Mens',
-				value: 'mens',
-			},
-			{
-				name: 'Womens',
-				value: 'womens',
-			},
-		],
-		handleChange: handleFilter,
-	};
+  if (!Array.isArray(data)) return null;
+  if (data.length < 1) {
+    return (
+      <div className="products">
+        <p>
+          No search results.
+        </p>
+      </div>
+    );
+  }
 
-	return (
-		<div className="products">
-			<h1>Browse Products</h1>
+  const configFilters = {
+    defaultValue: filterType,
+    options: [{
+      name: 'Show all',
+      value: ''
+    }, {
+      name: 'Mens',
+      value: 'mens'
+    }, {
+      name: 'Womens',
+      value: 'womens'
+    }],
+    handleChange: handleFilter
+  };
 
-			<FormSelect {...configFilters} />
+  const handleLoadMore = () => {
+    dispatch(
+      fetchProductsStart({
+        filterType,
+        startAfterDoc: queryDoc,
+        persistProducts: data
+      })
+    )
+  };
 
-			<div className="productResults">
-				{products.map((product, pos) => {
-					const { productThumbnail, productName, productPrice } = product;
-					if (
-						!productThumbnail ||
-						!productName ||
-						typeof productPrice === 'undefined'
-					)
-						return null;
+  const configLoadMore = {
+    onLoadMoreEvt: handleLoadMore,
+  };
 
-					const configProduct = {
-						productThumbnail,
-						productName,
-						productPrice,
-					};
+  return (
+    <div className="products">
 
-                    return <Product key={productName } {...configProduct} />;
-				})}
-			</div>
-		</div>
-	);
+      <h1>
+        Browse Products
+      </h1>
+
+      <FormSelect {...configFilters} />
+
+      <div className="productResults">
+        {data.map((product, pos) => {
+          const { productThumbnail, productName, productPrice } = product;
+          if (!productThumbnail || !productName ||
+            typeof productPrice === 'undefined') return null;
+
+          const configProduct = {
+            productThumbnail,
+            productName,
+            productPrice
+          };
+
+          return (
+            <Product {...configProduct} />
+          );
+        })}
+      </div>
+
+      {!isLastPage && (
+        <LoadMore {...configLoadMore} />
+      )}
+
+    </div>
+  );
 };
 
 export default ProductResults;
