@@ -25,7 +25,7 @@ const Admin = (props) => {
 	const [productPrice, setProductPrice] = useState(0);
 
 	useEffect(() => {
-		dispatch(fetchProductsStart());
+		dispatch(fetchProductsStart({ filterType:""}));
 	}, []);
 	const toggleModal = () => setHideModal(!hideModal);
 

@@ -1,6 +1,5 @@
 import { auth } from './../../firebase/utils';
-import firebase
-from './../../firebase/utils';
+import firebase from './../../firebase/utils';
 
 import { takeLatest, put, all, call } from 'redux-saga/effects';
 import { setProducts, fetchProductsStart } from './products.actions';
@@ -15,7 +14,7 @@ export function* addProduct({
 	payload: { productCategory, productName, productThumbnail, productPrice },
 }) {
 	try {
-		console.log('in saga trying')
+		console.log('in saga trying');
 		yield handleAddProduct({
 			productCategory,
 			productName,
@@ -34,9 +33,10 @@ export function* onAddProductStart() {
 	yield takeLatest(actionTypes.ADD_NEW_PRODUCT_START, addProduct);
 }
 
-export function* fetchProducts() {
+export function* fetchProducts({ payload: { filterType } }) {
 	try {
-		const products = yield handleFetchProducts();
+		console.log(filterType, 'hi from saga');
+		const products = yield handleFetchProducts({ filterType });
 		yield put(setProducts(products));
 	} catch (err) {
 		// console.log(err);
@@ -50,7 +50,7 @@ export function* onFetchProductsStart() {
 export function* deleteProduct({ payload }) {
 	try {
 		yield handleDeleteProduct(payload);
-		yield put(fetchProductsStart());
+		yield put(fetchProductsStart({ filterType: '' }));
 	} catch (err) {
 		// console.log(err);
 	}
