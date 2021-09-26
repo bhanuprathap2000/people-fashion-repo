@@ -10,10 +10,14 @@ import HomepageLayout from './layouts/HomepageLayout';
 import Homepage from './pages/Homepage';
 import Registration from './pages/Registration';
 import Login from './pages/Login';
+import Recovery from './pages/Recovery';
+
 import './default.scss';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const initialState = {
 	currentUser: null,
+	open: false,
 };
 
 class App extends Component {
@@ -23,6 +27,17 @@ class App extends Component {
 			...initialState,
 		};
 	}
+	handleClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+
+		this.setState({ open: false });
+	};
+
+	handleSnackbar = () => {
+		this.setState({ open: true });
+	};
 
 	authListener = null;
 
@@ -69,46 +84,66 @@ class App extends Component {
 	}
 
 	render() {
-		const { currentUser } = this.state;
+		const { currentUser, open } = this.state;
 
 		return (
-			<div className="App">
-				<Switch>
-					<Route
-						exact
-						path="/"
-						render={() => (
-							<HomepageLayout currentUser={currentUser}>
-								<Homepage />
-							</HomepageLayout>
-						)}
-					/>
-					<Route
-						path="/registration"
-						render={() =>
-							currentUser ? (
-								<Redirect to="/" />
-							) : (
-								<MainLayout currentUser={currentUser}>
-									<Registration />
+			<>
+				<div className="App">
+					<Switch>
+						<Route
+							exact
+							path="/"
+							render={() => (
+								<HomepageLayout currentUser={currentUser}>
+									<Homepage />
+								</HomepageLayout>
+							)}
+						/>
+						<Route
+							path="/registration"
+							render={() =>
+								currentUser ? (
+									<Redirect to="/" />
+								) : (
+									<MainLayout currentUser={currentUser}>
+										<Registration />
+									</MainLayout>
+								)
+							}
+						/>
+						<Route
+							path="/login"
+							render={() =>
+								currentUser ? (
+									<Redirect to="/" />
+								) : (
+									<MainLayout currentUser={currentUser}>
+										<Login />
+									</MainLayout>
+								)
+							}
+						/>
+						<Route
+							path="/recovery"
+							render={() => (
+								<MainLayout>
+									<Recovery handleSnackbar={this.handleSnackbar} />
 								</MainLayout>
-							)
-						}
-					/>
-					<Route
-						path="/login"
-						render={() =>
-							currentUser ? (
-								<Redirect to="/" />
-							) : (
-								<MainLayout currentUser={currentUser}>
-									<Login />
-								</MainLayout>
-							)
-						}
-					/>
-				</Switch>
-			</div>
+							)}
+						/>
+					</Switch>
+				</div>
+				<Snackbar
+					anchorOrigin={{
+						vertical: 'bottom',
+						horizontal: 'left',
+					}}
+					open={open}
+					autoHideDuration={6000}
+					onClose={this.handleClose}
+					message="Reset Link sent to Email"
+				/>
+			</>
 		);
 	}
 }
