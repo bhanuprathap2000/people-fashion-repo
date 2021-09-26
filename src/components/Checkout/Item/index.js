@@ -47,7 +47,7 @@ const Item = (product) => {
 					<td>₹{productPrice}</td>
 					<td align="center">
 						<span
-							className="cartBtn"
+							className="cartBtn remove"
 							onClick={() => handleRemoveCartItem(documentID)}>
 							X
 						</span>

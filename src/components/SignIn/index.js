@@ -88,6 +88,10 @@ const SignIn = (props) => {
 					</div>
 
 					<div className="links">
+						<Link to="/registration">Register</Link>
+						{` | `}
+						<Link to="/login">LogIn</Link>
+						{` | `}
 						<Link to="/recovery">Reset Password</Link>
 					</div>
 				</form>

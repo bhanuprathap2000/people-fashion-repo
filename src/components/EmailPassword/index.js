@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory,Link } from 'react-router-dom';
 import {
 	resetPasswordStart,
 	resetUserState,
@@ -67,6 +67,15 @@ const EmailPassword = ({ handleSnackbar}) => {
 
 					<Button type="submit">Email Password</Button>
 				</form>
+				<div className="links">
+          <Link to="/login">
+            LogIn
+          </Link>
+          {` | `}
+          <Link to="/registration">
+            Register
+          </Link>
+        </div>
 			</div>
 		</AuthWrapper>
 	);

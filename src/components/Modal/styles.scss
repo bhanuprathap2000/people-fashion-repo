@@ -4,6 +4,8 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,.3);
+    z-index: 100;
+
   }
   
   .modal {
@@ -19,5 +21,7 @@
     height: auto;
     min-height: 40.0rem;
     pointer-events: all;
+    max-height: 95vh;
+    overflow: auto;
 
   } 

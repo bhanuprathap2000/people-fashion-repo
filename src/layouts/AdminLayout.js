@@ -34,7 +34,6 @@ const AdminLayout = (props) => {
 				</div>
 				<div className="content">{props.children}</div>
 			</div>
-			<Footer />
 		</div>
 	);
 };
