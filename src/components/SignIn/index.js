@@ -12,16 +12,13 @@ import AuthWrapper from './../AuthWrapper';
 import FormInput from './../forms/FormInput';
 import Button from './../forms/Buttons';
 
-const mapState = ({ user }) => ({
-	currentUser: user.currentUser,
-});
-
 const SignIn = (props) => {
 	const dispatch = useDispatch();
 	const history = useHistory();
-	const { currentUser } = useSelector(mapState);
+	const { currentUser, userErr } = useSelector((state) => state.user);
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [errors, setErrors] = useState([]);
 
 	useEffect(() => {
 		if (currentUser) {
@@ -29,6 +26,12 @@ const SignIn = (props) => {
 			history.push('/');
 		}
 	}, [currentUser]);
+
+	useEffect(() => {
+		if (Array.isArray(userErr) && userErr.length > 0) {
+			setErrors(userErr);
+		}
+	}, [userErr]);
 
 	const resetForm = () => {
 		setEmail('');
@@ -51,6 +54,14 @@ const SignIn = (props) => {
 	return (
 		<AuthWrapper {...configAuthWrapper}>
 			<div className="formWrap">
+				{errors.length > 0 && (
+					<ul>
+						{errors.map((e, index) => {
+							return <li key={index}>{e}</li>;
+						})}
+					</ul>
+				)}
+
 				<form onSubmit={handleSubmit}>
 					<FormInput
 						type="email"
