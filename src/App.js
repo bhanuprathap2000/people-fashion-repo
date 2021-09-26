@@ -25,6 +25,8 @@ import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
 import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
+import Payment from './pages/Payment';
+
 
 import './default.scss';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -116,6 +118,13 @@ const App = (props) => {
 							</MainLayout>
 						)}
 					/>
+					<Route path="/payment" render={() => (
+          <WithAuth>
+            <MainLayout>
+              <Payment />
+            </MainLayout>
+          </WithAuth>
+        )} />
 					<Route
 						path="/registration"
 						render={() =>
