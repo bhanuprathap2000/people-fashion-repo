@@ -26,6 +26,7 @@ import Admin from './pages/Admin';
 import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import Payment from './pages/Payment';
+import Order from './pages/Order';
 
 
 import './default.scss';
@@ -123,6 +124,13 @@ const App = (props) => {
             <MainLayout>
               <Payment />
             </MainLayout>
+          </WithAuth>
+					)} />
+					 <Route path="/order/:orderID" render={() => (
+          <WithAuth>
+            <DashboardLayout>
+              <Order />
+            </DashboardLayout>
           </WithAuth>
         )} />
 					<Route

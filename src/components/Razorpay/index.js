@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Snackbar } from '@material-ui/core';
+import { Snackbar } from '@material-ui/core';
+import Button from './../forms/Buttons';
 function Razorpay({ updatePayment, handleSubmit, address, totalAmount }) {
 	const [snackbarText, setSnackbarText] = useState('');
 
@@ -97,12 +98,8 @@ function Razorpay({ updatePayment, handleSubmit, address, totalAmount }) {
 
 	return (
 		<Fragment>
-			<Button
-				onClick={displayRazorpay}
-				variant="contained"
-				color="primary"
-				type="submit">
-				Pay
+			<Button onClick={displayRazorpay} type="submit">
+				Pay Now
 			</Button>
 
 			{snackbarText && (
