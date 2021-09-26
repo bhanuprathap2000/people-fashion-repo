@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import './styles.scss';
 import Button from './../forms/Buttons';
 import { signInWithGoogle, auth } from './../../firebase/utils';
@@ -6,104 +7,84 @@ import FormInput from './../forms/FormInput';
 import AuthWrapper from '../AuthWrapper';
 import { Link } from 'react-router-dom';
 
-const initialState = {
-	email: '',
-	password: '',
-	errors: [],
-};
+const SignIn = (props) => {
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [errors, setErrors] = useState([]);
+	const history = useHistory();
 
-class SignIn extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			...initialState,
-		};
+	const resetForm = () => {
+		setEmail('');
+		setPassword('');
+	};
 
-		this.handleChange = this.handleChange.bind(this);
-	}
-
-	handleChange(e) {
-		//this function responsibele for updating the state
-		const { name, value } = e.target;
-		this.setState({
-			[name]: value,
-		});
-	}
-
-	handleSubmit = async (e) => {
+	const handleSubmit = async (e) => {
 		/*
 		
-		so this function will run when we click on the submit and we destruture the email and password
+		so this function will run when we click on the submit and we prevent the default behaviour
 		and then using  the auth instance call the siginWithemailandpassword and pass the details
 		we are doing this in try catch block because their might be any error that can occur during the
 		sigin
 		when it is sucessful we reset the form 
 		*/
 		e.preventDefault();
-		const { email, password } = this.state;
 
 		try {
 			await auth.signInWithEmailAndPassword(email, password);
-			this.setState({
-				...initialState,
-			});
+			resetForm();
+			history.push('/');
 		} catch (err) {
 			console.table(err);
-			this.setState({
-				errors: [err.message],
-			});
+			setErrors([err.message]);
 		}
 	};
 
-	render() {
-		const { email, password, errors } = this.state;
-		const configAuthWrapper = {
-			headline: 'LogIn',
-		};
+	const configAuthWrapper = {
+		headline: 'LogIn',
+	};
 
-		return (
-			<AuthWrapper {...configAuthWrapper}>
-				{errors.length > 0 && (
-					<ul>
-						{errors.map((err, index) => {
-							return <li key={index}>{err}</li>;
-						})}
-					</ul>
-				)}
+	return (
+		<AuthWrapper {...configAuthWrapper}>
+			{errors.length > 0 && (
+				<ul>
+					{errors.map((err, index) => {
+						return <li key={index}>{err}</li>;
+					})}
+				</ul>
+			)}
 
-				<div className="formWrap">
-					<form onSubmit={this.handleSubmit}>
-						<FormInput
-							type="email"
-							name="email"
-							value={email}
-							placeholder="Email"
-							handleChange={this.handleChange}
-						/>
+			<div className="formWrap">
+				<form onSubmit={handleSubmit}>
+					<FormInput
+						type="email"
+						name="email"
+						value={email}
+						placeholder="Email"
+						handleChange={(e) => setEmail(e.target.value)}
+					/>
 
-						<FormInput
-							type="password"
-							name="password"
-							value={password}
-							placeholder="Password"
-							handleChange={this.handleChange}
-						/>
+					<FormInput
+						type="password"
+						name="password"
+						value={password}
+						placeholder="Password"
+						handleChange={(e) => setPassword(e.target.value)}
+					/>
 
-						<Button type="submit">LogIn</Button>
+					<Button type="submit">LogIn</Button>
 
-						<div className="socialSignin">
-							<div className="row">
-								<Button onClick={signInWithGoogle}>Sign in with Google</Button>
-							</div>
+					<div className="socialSignin">
+						<div className="row">
+							<Button onClick={signInWithGoogle}>Sign in with Google</Button>
 						</div>
-						<div className="links">
-							<Link to="/recovery">Reset Password</Link>
-						</div>
-					</form>
-				</div>
-			</AuthWrapper>
-		);
-	}
-}
+					</div>
+					<div className="links">
+						<Link to="/recovery">Reset Password</Link>
+					</div>
+				</form>
+			</div>
+		</AuthWrapper>
+	);
+};
 
 export default SignIn;
