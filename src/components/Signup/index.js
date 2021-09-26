@@ -4,7 +4,7 @@ import './styles.scss';
 import { auth, handleUserProfile } from './../../firebase/utils';
 
 import FormInput from './../forms/FormInput';
-import Button from './../forms/Button';
+import Button from './../forms/Buttons';
 
 const initialState = {
 	displayName: '',
@@ -70,7 +70,10 @@ class Signup extends Component {
 				...initialState,
 			});
 		} catch (err) {
-			// console.log(err);
+			console.log(err.message);
+			this.setState({
+				errors: [err.message],
+			});
 		}
 	};
 

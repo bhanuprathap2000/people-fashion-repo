@@ -8,6 +8,7 @@ import FormInput from './../forms/FormInput';
 const initialState = {
 	email: '',
 	password: '',
+	errors: [],
 };
 
 class SignIn extends Component {
@@ -46,17 +47,28 @@ class SignIn extends Component {
 				...initialState,
 			});
 		} catch (err) {
-			// console.log(err);
+			console.log(err);
+			this.setState({
+				errors: [err.message],
+			});
 		}
 	};
 
 	render() {
-		const { email, password } = this.state;
+		const { email, password,errors } = this.state;
 
 		return (
 			<div className="signin">
 				<div className="wrap">
 					<h2>LogIn</h2>
+					{errors.length > 0 && (
+						<ul>
+							{errors.map((err, index) => {
+								return <li key={index}>{err}</li>;
+							})}
+						</ul>
+					)}
+
 
 					<div className="formWrap">
 						<form onSubmit={this.handleSubmit}>
