@@ -15,7 +15,7 @@ GoogleProvider.setCustomParameters({ prompt: 'select_account' });
 //this function is responsible for creating the new users in the users collection
 //because the users will be in different table in the auth section so we can create a
 //seperate section for users
-export const handleUserProfile = async (userAuth, additionalData) => {
+export const handleUserProfile = async ({ userAuth, additionalData }) => {
 	/*
 	it takes a user object and any additional data as props if user not signin then simply return 
 	if user exsists then destrture it
@@ -47,4 +47,12 @@ export const handleUserProfile = async (userAuth, additionalData) => {
 		}
 	}
 	return userRef;
+};
+export const getCurrentUser = () => {
+	return new Promise((resolve, reject) => {
+		const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+			unsubscribe();
+			resolve(userAuth);
+		}, reject);
+	});
 };

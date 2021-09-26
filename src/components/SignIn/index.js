@@ -1,54 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
+import {
+	emailSignInStart,
+	googleSignInStart,
+} from './../../store/User/user.actions';
+
 import './styles.scss';
-import Button from './../forms/Buttons';
+
+import AuthWrapper from './../AuthWrapper';
 import FormInput from './../forms/FormInput';
-import AuthWrapper from '../AuthWrapper';
-import { Link } from 'react-router-dom';
-import { signInUser, signInWithGoogle } from '../../store/User/user.actions';
+import Button from './../forms/Buttons';
+
+const mapState = ({ user }) => ({
+	currentUser: user.currentUser,
+});
 
 const SignIn = (props) => {
+	const dispatch = useDispatch();
+	const history = useHistory();
+	const { currentUser } = useSelector(mapState);
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const history = useHistory();
-	const [errors, setErrors] = useState([]);
-	const { signInSuccess, signInError } = useSelector((state) => state.user);
-	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (currentUser) {
+			resetForm();
+			history.push('/');
+		}
+	}, [currentUser]);
 
 	const resetForm = () => {
 		setEmail('');
 		setPassword('');
 	};
 
-	useEffect(() => {
-		if (signInSuccess) {
-			resetForm();
-			history.push('/');
-		}
-	}, [signInSuccess]);
-
-	useEffect(() => {
-		if (Array.isArray(signInError) && signInError.length > 0) {
-			setErrors(signInError);
-		}
-	}, [signInError]);
-
 	const handleSubmit = (e) => {
-		/*
-		
-		so this function will run when we click on the submit and we prevent the default behaviour
-		and then using  the auth instance call the siginWithemailandpassword and pass the details
-		we are doing this in try catch block because their might be any error that can occur during the
-		sigin
-		when it is sucessful we reset the form 
-		*/
 		e.preventDefault();
-
-		dispatch(signInUser({ email, password }));
+		dispatch(emailSignInStart({ email, password }));
 	};
+
 	const handleGoogleSignIn = () => {
-		dispatch(signInWithGoogle());
+		dispatch(googleSignInStart());
 	};
 
 	const configAuthWrapper = {
@@ -57,14 +50,6 @@ const SignIn = (props) => {
 
 	return (
 		<AuthWrapper {...configAuthWrapper}>
-			{errors.length > 0 && (
-				<ul>
-					{errors.map((err, index) => {
-						return <li key={index}>{err}</li>;
-					})}
-				</ul>
-			)}
-
 			<div className="formWrap">
 				<form onSubmit={handleSubmit}>
 					<FormInput
@@ -90,6 +75,7 @@ const SignIn = (props) => {
 							<Button onClick={handleGoogleSignIn}>Sign in with Google</Button>
 						</div>
 					</div>
+
 					<div className="links">
 						<Link to="/recovery">Reset Password</Link>
 					</div>

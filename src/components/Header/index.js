@@ -1,13 +1,22 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { signOutUserStart } from './../../store/User/user.actions';
 import './styles.scss';
 import { Link } from 'react-router-dom';
+
 import Logo from '../../assests/logo.png';
-import { signOutUser } from '../../store/User/user.actions';
+
+const mapState = ({ user }) => ({
+	currentUser: user.currentUser,
+});
 
 const Header = (props) => {
-	const { currentUser } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
+	const { currentUser } = useSelector(mapState);
+
+	const signOut = () => {
+		dispatch(signOutUserStart());
+	};
 
 	return (
 		<header className="header">
@@ -25,7 +34,7 @@ const Header = (props) => {
 								<Link to="/dashboard">My Account</Link>
 							</li>
 							<li>
-								<span onClick={() => dispatch(signOutUser())}>LogOut</span>
+								<span onClick={() => signOut()}>LogOut</span>
 							</li>
 						</ul>
 					)}
@@ -50,14 +59,4 @@ Header.defaultProps = {
 	currentUser: null,
 };
 
-//Here we are connecting the redux store to the component props
-//we are destructuring the required fronm the redux store(user) and return them  and they will be avialable as
-//component props
-// const matchStateToProps = ({ user }) => {
-// 	return {
-// 		currentUser: user.currentUser,
-// 	};
-// };
-
-//this is a higher order component concept
 export default Header;
