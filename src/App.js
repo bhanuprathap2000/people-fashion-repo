@@ -15,8 +15,10 @@ import Recovery from './pages/Recovery';
 import './default.scss';
 import Snackbar from '@material-ui/core/Snackbar';
 
+import { connect } from 'react-redux';
+import setCurrentUser from './store/User/user.actions';
+
 const initialState = {
-	currentUser: null,
 	open: false,
 };
 
@@ -42,6 +44,7 @@ class App extends Component {
 	authListener = null;
 
 	componentDidMount() {
+		const { setCurrentUser } = this.props;
 		/*
 		working
 		so after the component is mounted then we will setup a listener and which will be listening for 
@@ -50,7 +53,7 @@ class App extends Component {
 		we pass that user object to handleUserProfile function (please look into that function what it does)
 		then we get back a user reference we setup a listener for that document and then update our local state 
 		of the current  user
-		if logged out then reset the state of the current user
+		if logged out then reset the state of the current user using the setCurrentUser function
 		in the render function we destruture the current user and pass to all the routes
 		and based on the current we show the registartion,login or logout
 		if already login redirect back to the homepage
@@ -64,7 +67,7 @@ class App extends Component {
 			if (userAuth) {
 				const userRef = await handleUserProfile(userAuth);
 				userRef.onSnapshot((snapshot) => {
-					this.setState({
+					setCurrentUser({
 						currentUser: {
 							id: snapshot.id,
 							...snapshot.data(),
@@ -73,9 +76,7 @@ class App extends Component {
 				});
 			}
 
-			this.setState({
-				...initialState,
-			});
+			setCurrentUser(userAuth);
 		});
 	}
 
@@ -84,7 +85,8 @@ class App extends Component {
 	}
 
 	render() {
-		const { currentUser, open } = this.state;
+		const { open } = this.state;
+		const { currentUser } = this.props;
 
 		return (
 			<>
@@ -94,7 +96,7 @@ class App extends Component {
 							exact
 							path="/"
 							render={() => (
-								<HomepageLayout currentUser={currentUser}>
+								<HomepageLayout>
 									<Homepage />
 								</HomepageLayout>
 							)}
@@ -105,7 +107,7 @@ class App extends Component {
 								currentUser ? (
 									<Redirect to="/" />
 								) : (
-									<MainLayout currentUser={currentUser}>
+									<MainLayout>
 										<Registration />
 									</MainLayout>
 								)
@@ -117,7 +119,7 @@ class App extends Component {
 								currentUser ? (
 									<Redirect to="/" />
 								) : (
-									<MainLayout currentUser={currentUser}>
+									<MainLayout>
 										<Login />
 									</MainLayout>
 								)
@@ -148,4 +150,21 @@ class App extends Component {
 	}
 }
 
-export default App;
+//so what does this mapStateToProps do is it connects redux store to the props of the component
+
+const mapStateToProps = ({ user }) => {
+	return {
+		currentUser: user.currentUser,
+	};
+};
+
+//what does the mapDispatchToProps do is that we can create functions which when called will dispatch the actions and make available these functions to
+//component to call them as props.
+//  i prefer return {}-.explict return  thyan this ({})->implict return
+const mapDispatchToProps = (dispatch) => {
+	return {
+		setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
