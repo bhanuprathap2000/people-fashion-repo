@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useHistory } from 'react-router-dom';
 import Button from './../../forms/Buttons';
 import { useDispatch } from 'react-redux';
 import { addProduct } from './../../../store/Cart/cart.actions';
 
 const Product = (product) => {
 	const dispatch = useDispatch();
+	const history = useHistory();
 	const {
 	  documentID,
 	  productThumbnail,
@@ -51,7 +52,10 @@ const Product = (product) => {
 					</li>
 					<li>
 						<div className="addToCart">
-						<Button {...configAddToCartBtn} onClick={() => handleAddToCart(product)} >Add To Cart</Button>
+							<Button {...configAddToCartBtn} onClick={() => {
+								handleAddToCart(product)
+								history.push('/cart')
+							}} >Add To Cart</Button>
 						</div>
 					</li>
 				</ul>
