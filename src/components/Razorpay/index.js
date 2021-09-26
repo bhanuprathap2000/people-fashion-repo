@@ -33,7 +33,7 @@ function Razorpay({ updatePayment, handleSubmit, address, totalAmount }) {
 				setSnackbarText('Razorpay SDK failed to load. Are you online?');
 				return;
 			}
-			const result = await axios.post('http://localhost:5000/payment/orders', {
+			const result = await axios.post('https://people-fashion.herokuapp.com/payment/orders', {
 				amount: totalAmount,
 			});
 			const { amount, id: order_id, currency } = result.data;
@@ -56,7 +56,7 @@ function Razorpay({ updatePayment, handleSubmit, address, totalAmount }) {
 
 					try {
 						const result = await axios.post(
-							'http://localhost:5000/payment/success',
+							'https://people-fashion.herokuapp.com/payment/success',
 							data
 						);
 
