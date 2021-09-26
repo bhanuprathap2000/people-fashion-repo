@@ -15,13 +15,14 @@ export function* addProduct({
 	payload: { productCategory, productName, productThumbnail, productPrice },
 }) {
 	try {
+		console.log('in saga trying')
 		yield handleAddProduct({
 			productCategory,
 			productName,
 			productThumbnail,
 			productPrice,
 			productAdminUserUID: auth.currentUser.uid,
-			createdDate: firebase.firestore.FieldValue.serverTimestamp(),
+			createdDate: new Date(),
 		});
 		yield put(fetchProductsStart());
 	} catch (err) {

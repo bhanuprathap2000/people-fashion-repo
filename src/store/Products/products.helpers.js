@@ -50,4 +50,4 @@ export const handleDeleteProduct = documentID => {
         reject(err);
       })
   });
-} 
+}
