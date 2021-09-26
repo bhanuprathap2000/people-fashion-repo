@@ -4,8 +4,6 @@ import { signOutUserStart } from './../../store/User/user.actions';
 import './styles.scss';
 import { Link } from 'react-router-dom';
 
-import Logo from '../../assests/logo.png';
-
 const mapState = ({ user }) => ({
 	currentUser: user.currentUser,
 });
@@ -21,12 +19,11 @@ const Header = (props) => {
 	return (
 		<header className="header">
 			<div className="wrap">
-				<div className="logo">
+				<div>
 					<Link to="/">
-						<img src={Logo} alt="SimpleTut LOGO" />
+						<h1>People Fashion</h1>
 					</Link>
 				</div>
-
 				<div className="callToActions">
 					{currentUser && (
 						<ul>

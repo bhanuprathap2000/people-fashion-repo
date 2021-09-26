@@ -2,11 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { checkUserSession } from './store/User/user.actions';
 
+//components
+import AdminToolbar from './components/AdminToolbar';
+
 // hoc
 import WithAuth from './hoc/withAuth';
+import WithAdminAuth from './hoc/withAdminAuth';
+
 // layouts
 import MainLayout from './layouts/MainLayout';
 import HomepageLayout from './layouts/HomepageLayout';
+import AdminLayout from './layouts/AdminLayout';
+import DashboardLayout from './layouts/DashboardLayout';
 
 // pages
 import Homepage from './pages/Homepage';
@@ -14,6 +21,7 @@ import Registration from './pages/Registration';
 import Login from './pages/Login';
 import Recovery from './pages/Recovery';
 import Dashboard from './pages/Dashboard';
+import Admin from './pages/Admin';
 
 import './default.scss';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -33,7 +41,7 @@ const App = (props) => {
 		setOpen(false);
 	};
 
-	 const handleSnackbar = () => {
+	const handleSnackbar = () => {
 		setOpen(true);
 	};
 
@@ -60,6 +68,8 @@ const App = (props) => {
 	return (
 		<>
 			<div className="App">
+				<AdminToolbar />
+
 				<Switch>
 					<Route
 						exact
@@ -110,10 +120,20 @@ const App = (props) => {
 						path="/dashboard"
 						render={() => (
 							<WithAuth>
-								<MainLayout>
+								<DashboardLayout>
 									<Dashboard />
-								</MainLayout>
+								</DashboardLayout>
 							</WithAuth>
+						)}
+					/>
+					<Route
+						path="/admin"
+						render={() => (
+							<WithAdminAuth>
+								<AdminLayout>
+									<Admin />
+								</AdminLayout>
+							</WithAdminAuth>
 						)}
 					/>
 				</Switch>
