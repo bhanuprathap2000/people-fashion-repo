@@ -27,6 +27,22 @@ class App extends Component {
 	authListener = null;
 
 	componentDidMount() {
+		/*
+		working
+		so after the component is mounted then we will setup a listener and which will be listening for 
+		auth changes if user login we receive the user object and if logout then we will receive null
+		assuming the user is logged in inside the if check is there
+		we pass that user object to handleUserProfile function (please look into that function what it does)
+		then we get back a user reference we setup a listener for that document and then update our local state 
+		of the current  user
+		if logged out then reset the state of the current user
+		in the render function we destruture the current user and pass to all the routes
+		and based on the current we show the registartion,login or logout
+		if already login redirect back to the homepage
+		inside the render prop of the route we will render the components based on the current user for 
+		login route rest only the layout wrapping.
+		
+		*/
 		this.authListener = auth.onAuthStateChanged(async (userAuth) => {
 			console.log(userAuth);
 
