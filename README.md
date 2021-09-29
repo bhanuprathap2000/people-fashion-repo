@@ -34,4 +34,4 @@ This folder contains all files related to the redux,redux saga
 For this project the payment gateway we have used is the razorpay and the endpoints for razorpay are avialable 
 The api keys used are dummy when you clone you can either use my api keys if they expire you can create your own
 account with razorpay and can get the keys and replace your keys with my keys.
-in seperate reposistory :<a>https://github.com/bhanuprathap2000/razorpay-payment-api</a>
+in seperate reposistory :<a href="https://github.com/bhanuprathap2000/razorpay-payment-api" target="_blank">Razorpay Reposistory</a>
