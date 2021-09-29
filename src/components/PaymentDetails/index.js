@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import FormInput from './../forms/FormInput';
 import Button from './../forms/Buttons';
-import { selectCartTotal, selectCartItemsCount, selectCartItems } from './../../store/Cart/cart.selectors';
+import {
+	selectCartTotal,
+	selectCartItemsCount,
+	selectCartItems,
+} from './../../store/Cart/cart.selectors';
 import { saveOrderHistory } from './../../store/Orders/orders.actions';
 import { clearCart } from './../../store/Cart/cart.actions';
 import { createStructuredSelector } from 'reselect';
@@ -11,6 +15,7 @@ import './styles.scss';
 import Razorpay from '../Razorpay';
 
 const initialAddressState = {
+	customerName: '',
 	line1: '',
 	line2: '',
 	city: '',
@@ -34,14 +39,13 @@ const PaymentDetails = () => {
 	const [shippingAddress, setShippingAddress] = useState({
 		...initialAddressState,
 	});
-	const [recipientName, setRecipientName] = useState('');
-	const [nameOnCard, setNameOnCard] = useState('');
+
 	const [formFilled, setFormFilled] = useState(false);
+	const [checked, setChecked] = useState(false);
 
 	useEffect(() => {
 		if (itemCount < 1) {
 			history.push('/dashboard');
-
 		}
 	}, [itemCount]);
 
@@ -75,20 +79,25 @@ const PaymentDetails = () => {
 		if (pay) {
 			const configOrder = {
 				orderTotal: total,
-				orderItems: cartItems.map(item => {
-				  const { documentID, productThumbnail, productName,
-					productPrice, quantity } = item;
-	
-				  return {
-					documentID,
-					productThumbnail,
-					productName,
-					productPrice,
-					quantity
-				  };
-				})
-			  }
-			dispatch( saveOrderHistory(configOrder));
+				orderItems: cartItems.map((item) => {
+					const {
+						documentID,
+						productThumbnail,
+						productName,
+						productPrice,
+						quantity,
+					} = item;
+
+					return {
+						documentID,
+						productThumbnail,
+						productName,
+						productPrice,
+						quantity,
+					};
+				}),
+			};
+			dispatch(saveOrderHistory(configOrder));
 		}
 	};
 
@@ -101,18 +110,33 @@ const PaymentDetails = () => {
 			!shippingAddress.line1 ||
 			!shippingAddress.city ||
 			!shippingAddress.state ||
+			!shippingAddress.customerName ||
 			!shippingAddress.postal_code ||
 			!billingAddress.line1 ||
 			!billingAddress.city ||
 			!billingAddress.state ||
 			!billingAddress.postal_code ||
-			!recipientName
+			!billingAddress.customerName
 		) {
 			return;
 		}
 
 		setFormFilled(true);
 	};
+
+	const handleChange = (e) => {
+		const { checked } = e.target;
+		console.log(checked);
+		setChecked(checked);
+	};
+
+	useEffect(() => {
+		if (checked) {
+			setBillingAddress({ ...shippingAddress });
+		} else {
+			setBillingAddress({ ...initialAddressState });
+		}
+	}, [checked]);
 
 	return (
 		<div className="paymentDetails">
@@ -123,9 +147,9 @@ const PaymentDetails = () => {
 					<FormInput
 						required
 						placeholder="Recipient Name"
-						name="recipientName"
-						handleChange={(evt) => setRecipientName(evt.target.value)}
-						value={recipientName}
+						name="customerName"
+						handleChange={(evt) => handleShipping(evt)}
+						value={shippingAddress.customerName}
 						type="text"
 					/>
 
@@ -174,15 +198,27 @@ const PaymentDetails = () => {
 					/>
 				</div>
 
+				<label style={{ cursor: 'pointer', color: 'red' }} htmlFor="checkbox1">
+					Click if shipping and billing address are same.
+				</label>
+				<input
+					type="checkbox"
+					name="checkBox"
+					id="checkbox1"
+					checked={checked}
+					onChange={handleChange}
+				/>
+				<div style={{ marginBottom: '20px' }}></div>
+
 				<div className="group">
 					<h2>Billing Address</h2>
 
 					<FormInput
 						required
-						placeholder="Name on Card"
-						name="nameOnCard"
-						handleChange={(evt) => setNameOnCard(evt.target.value)}
-						value={nameOnCard}
+						placeholder="Recipient Name"
+						name="customerName"
+						handleChange={(evt) => handleShipping(evt)}
+						value={billingAddress.customerName}
 						type="text"
 					/>
 
@@ -232,8 +268,8 @@ const PaymentDetails = () => {
 				</div>
 
 				{formFilled ? (
-                    <Razorpay
-                        totalAmount={ total}
+					<Razorpay
+						totalAmount={total}
 						address={shippingAddress}
 						handleSubmit={handlePayment}
 						updatePayment={updatePayment}
